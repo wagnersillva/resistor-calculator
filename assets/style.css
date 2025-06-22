@@ -161,7 +161,7 @@ h1 {
 }
 
 .color-resistor-body {
-    width: 250px;
+    width: 200px;
     height: 60px;
     background:
             radial-gradient(ellipse at center, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.1) 40%, transparent 70%),
