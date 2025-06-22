@@ -3,28 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Resistor SMD</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <title>Calculadora de Resistores</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-    <h1>Calculadora de Resistor SMD</h1>
+    <h1>Calculadora de Resistores</h1>
 
-    <div class="input-group">
-        <label for="smdCode">Insira o código do resistor SMD:</label>
-        <input type="text" id="smdCode" placeholder="Ex: 103, 472, 1002, 1R0, R56, 22A, 68C">
-        <button id="calculateBtn">Calcular</button>
+    <div class="tabs">
+        <div class="tab-header">
+            <button class="tab-button active" data-tab="smd">Resistor SMD</button>
+            <button class="tab-button" data-tab="colors">Resistor por Cores</button>
+        </div>
+
+        <div class="tab-content">
+            <div id="smd" class="tab-pane active">
+                <div class="calculator-section">
+                    <h2>Resistor SMD</h2>
+                    <div class="input-group">
+                        <label for="smdCode">Insira o código do resistor SMD:</label>
+                        <input type="text" id="smdCode" placeholder="Ex: 103, 472, 1002, 1R0, R56, 22A, 68C">
+                        <button id="calculateSmdBtn">Calcular SMD</button>
+                    </div>
+                    <div class="smd-visualizer-container">
+                        <div id="smdResistorVisualizer" class="smd-resistor-base">
+                        </div>
+                        <p class="visualizer-info">Representação visual do código SMD</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="colors" class="tab-pane">
+                <div class="calculator-section">
+                    <h2>Resistor por Cores</h2>
+                    <div class="color-bands-group">
+                        <p>Selecione as cores das faixas:</p>
+                        <div class="band-select">
+                            <label for="band1">Faixa 1:</label>
+                            <select id="band1" class="color-dropdown"></select>
+                        </div>
+                        <div class="band-select">
+                            <label for="band2">Faixa 2:</label>
+                            <select id="band2" class="color-dropdown"></select>
+                        </div>
+                        <div class="band-select">
+                            <label for="band3">Faixa 3 (Multiplicador):</label>
+                            <select id="band3" class="color-dropdown"></select>
+                        </div>
+                        <div class="band-select">
+                            <label for="band4">Faixa 4 (Tolerância):</label>
+                            <select id="band4" class="color-dropdown"></select>
+                        </div>
+                        <div class="band-select five-band-option" style="display: none;">
+                            <label for="band5">Faixa 5 (3º Dígito / Tolerância):</label>
+                            <select id="band5" class="color-dropdown"></select>
+                        </div>
+                        <div class="band-select six-band-option" style="display: none;">
+                            <label for="band6">Faixa 6 (Temperatura):</label>
+                            <select id="band6" class="color-dropdown"></select>
+                        </div>
+                        <div class="band-options">
+                            <label><input type="radio" name="numBands" value="4" checked> 4 Faixas</label>
+                            <label><input type="radio" name="numBands" value="5"> 5 Faixas</label>
+                            <label><input type="radio" name="numBands" value="6"> 6 Faixas</label>
+                        </div>
+                        <button id="calculateColorBtn">Calcular por Cores</button>
+                    </div>
+
+                    <div class="color-resistor-visualizer-container">
+                        <div id="colorResistorVisualizer" class="color-resistor-body">
+                            <div class="color-band band-1"></div>
+                            <div class="color-band band-2"></div>
+                            <div class="color-band band-3"></div>
+                            <div class="color-band band-4"></div>
+                            <div class="color-band band-5"></div>
+                            <div class="color-band band-6"></div>
+                            <div class="resistor-terminal left"></div>
+                            <div class="resistor-terminal right"></div>
+                        </div>
+                        <p class="visualizer-info">Representação visual do resistor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="result-box">
-        <p>Valor do Resistor:</p>
+        <h3>Resultado:</h3>
         <p class="result-unit">Ohms (Ω): <span id="resultOhms">--</span></p>
         <p class="result-unit">Kilo-Ohms (kΩ): <span id="resultKOhm">--</span></p>
         <p class="result-unit">Mega-Ohms (MΩ): <span id="resultMOhm">--</span></p>
         <p class="tolerance">Tolerância: <span id="toleranceValue">--</span></p>
+        <p class="temp-coeff">Coef. Temperatura: <span id="tempCoeffValue">--</span></p>
     </div>
 </div>
 
-<script src="assets/scripts.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
