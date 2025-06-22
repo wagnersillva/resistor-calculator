@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Resistor SMD</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Calculadora de Resistor SMD</h1>
+
+    <div class="input-group">
+        <label for="smdCode">Insira o código do resistor SMD:</label>
+        <input type="text" id="smdCode" placeholder="Ex: 103, 472, 1002, 1R0, R56, 22A, 68C">
+        <button id="calculateBtn">Calcular</button>
+    </div>
+
+    <div class="result-box">
+        <p>Valor do Resistor:</p>
+        <p class="result-unit">Ohms (Ω): <span id="resultOhms">--</span></p>
+        <p class="result-unit">Kilo-Ohms (kΩ): <span id="resultKOhm">--</span></p>
+        <p class="result-unit">Mega-Ohms (MΩ): <span id="resultMOhm">--</span></p>
+        <p class="tolerance">Tolerância: <span id="toleranceValue">--</span></p>
+    </div>
+</div>
+
+<script src="assets/scripts.js"></script>
+</body>
+</html>
