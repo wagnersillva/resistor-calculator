@@ -227,14 +227,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function calculateSmdResistance() {
         clearResults();
-        updateColorResistorVisualizer(true);
+        updateColorResistorVisualizer(true); // Limpa o visualizador de cores
 
         let code = smdCodeInput.value.trim().toUpperCase();
         let resistanceBaseValue = null;
-        let tolerance = '--';
-        let tempCoeff = '--';
+        let tolerance = '--'; // Default tolerance
+        let tempCoeff = '--'; // Not applicable for standard SMD codes
 
-        updateSmdVisualizer(code);
+        updateSmdVisualizer(code); // Atualiza o visualizador SMD
 
         if (!code) {
             resultOhmsSpan.textContent = "Por favor, insira um código SMD.";
@@ -243,64 +243,43 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 1. Caso especial com 'R' para ponto decimal (ex: 1R0, R56)
-        if (code.includes('R') && code.length > 1) {
-            const tempNumericPart = code.replace('R', '.');
-            if (!isNaN(parseFloat(tempNumericPart))) {
-                try {
-                    resistanceBaseValue = parseFloat(tempNumericPart);
-                    tolerance = '1% (geralmente)';
-                } catch (error) {
-                    resistanceBaseValue = "Código inválido.";
-                }
-            }
-        }
 
-        // 2. Tentativa de decodificar EIA-96
-        if (resistanceBaseValue === null && code.length === 3) {
-            const codePart = code.substring(0, 2);
+       if (code.length === 3 && isNaN(parseInt(code.substring(2)))) {
+            const valueCode = code.substring(0, 2);
             const multiplierLetter = code.substring(2, 3);
 
-            const isCodePartNumeric = !isNaN(parseInt(codePart)) && codePart.length === 2;
-            const isMultiplierLetter = eia96Multipliers[multiplierLetter] !== undefined;
+            const significantValue = eia96Values[valueCode];
+            const multiplier = eia96Multipliers[multiplierLetter];
 
-            if (isCodePartNumeric && isMultiplierLetter) {
-                const significantValue = eia96Values[codePart];
-                const multiplier = eia96Multipliers[multiplierLetter];
-
-                if (significantValue !== undefined && multiplier !== undefined) {
-                    resistanceBaseValue = significantValue * multiplier;
-                    tolerance = '1%';
-                } else {
-                    resistanceBaseValue = "Código EIA-96 inválido.";
-                }
-            }
-        }
-
-        // 3. Casos de 3 ou 4 dígitos numéricos (se ainda não foi decodificado)
-        if (resistanceBaseValue === null) {
-            const numericCode = parseInt(code);
-
-            if (!isNaN(numericCode) && numericCode >= 0) {
-                if (code.length === 3) {
-                    const firstTwoDigits = parseInt(code.substring(0, 2));
-                    const multiplierDigit = parseInt(code.substring(2, 3));
-
-                    resistanceBaseValue = firstTwoDigits * (10 ** multiplierDigit);
-                    tolerance = '5% (geralmente)';
-
-                } else if (code.length === 4) {
-                    const firstThreeDigits = parseInt(code.substring(0, 3));
-                    const multiplierDigit = parseInt(code.substring(3, 4));
-
-                    resistanceBaseValue = firstThreeDigits * (10 ** multiplierDigit);
-                    tolerance = '1% (geralmente)';
-                } else {
-                    resistanceBaseValue = "Formato de código SMD não reconhecido.";
-                }
+            if (significantValue !== undefined && multiplier !== undefined) {
+                resistanceBaseValue = significantValue * multiplier;
+                tolerance = '±1%'; // EIA-96 é para 1% de tolerância
             } else {
-                resistanceBaseValue = "Código SMD inválido ou formato não reconhecido.";
+                resistanceBaseValue = "Código EIA-96 inválido.";
             }
+        } else if (code.length === 4 && !isNaN(parseInt(code))) {
+            const firstThreeDigits = parseInt(code.substring(0, 3));
+            const multiplierDigit = parseInt(code.substring(3, 4));
+
+            if (!isNaN(firstThreeDigits) && !isNaN(multiplierDigit)) {
+                resistanceBaseValue = firstThreeDigits * (10 ** multiplierDigit);
+                tolerance = '±1%'; // 4 dígitos geralmente indicam 1%
+            } else {
+                resistanceBaseValue = "Código de 4 dígitos inválido.";
+            }
+        } else if (code.length === 3 && !isNaN(parseInt(code))) {
+            const firstTwoDigits = parseInt(code.substring(0, 2));
+            const multiplierDigit = parseInt(code.substring(2, 3));
+
+            if (!isNaN(firstTwoDigits) && !isNaN(multiplierDigit)) {
+                resistanceBaseValue = firstTwoDigits * (10 ** multiplierDigit);
+                tolerance = '±5%'; // 3 dígitos geralmente indicam 5%
+            } else {
+                resistanceBaseValue = "Código de 3 dígitos inválido.";
+            }
+        } else {
+            // Se nenhum dos formatos acima se encaixar
+            resistanceBaseValue = "Formato de código SMD não reconhecido.";
         }
 
         updateResultDisplay(resistanceBaseValue, tolerance, tempCoeff);
